@@ -77,8 +77,8 @@ function Detalle() {
                     <AlbumForm initialData={album} onSubmit={handlePut} />
                 )}
                 {favoritos.some((fav) => fav.ID === album.ID)
-                    ? <button onClick={() => quitarFavorito(album.ID)} style={{ backgroundColor: "red", color: "white" }}>Quitar de Favoritos</button>
-                    : <button onClick={() => agregarFavorito(album)} style={{ backgroundColor: "green", color: "white" }}>Agregar a Favoritos</button>
+                    ? <button onClick={() => quitarFavorito(album.ID)} >Quitar de Favoritos</button>
+                    : <button onClick={() => agregarFavorito(album)} >Agregar a Favoritos</button>
                 }
             </div>
         </div>

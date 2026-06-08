@@ -1,9 +1,16 @@
-import { createContext, useState } from "react"
+import { createContext, useEffect, useState } from "react"
 
 export const FavoritosContext = createContext()
 
 function FavoritosProvider({ children }) {
-  const [favoritos, setFavoritos] = useState([])
+  const [favoritos, setFavoritos] = useState(() => {
+    const guardado = localStorage.getItem("favoritos")
+    return guardado ? JSON.parse(guardado) : []
+  })
+
+  useEffect(() => {
+    localStorage.setItem("favoritos", JSON.stringify(favoritos))
+  }, [favoritos])
 
   const agregarFavorito = (elemento) => {
     setFavoritos([...favoritos, elemento])
