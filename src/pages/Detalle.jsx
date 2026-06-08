@@ -2,11 +2,14 @@ import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import axios from "axios"
 import AlbumForm from "../components/AlbumForm"
+import { useContext } from 'react'
+import { FavoritosContext } from '../context/FavoritosContext'
 function Detalle() {
     const { id } = useParams()
     const navigate = useNavigate()
     const [album, setAlbum] = useState(null)
     const [modoEditar, setModoEditar] = useState(false)
+    const { favoritos, agregarFavorito, quitarFavorito } = useContext(FavoritosContext)
 
     useEffect(() => {
         axios.get(`http://localhost:3000/album/albumes/id/${id}`)
@@ -25,16 +28,16 @@ function Detalle() {
     }
 
     const handlePut = (datos) => {
-  const { ID, ...datosSinID } = datos
-  axios.put(`http://localhost:3000/album/actualizar/${album.ID}`, datosSinID)
-    .then(() => {
-      alert("Album actualizado correctamente")
-      setModoEditar(false)
-    })
-    .catch(() => {
-      alert("Error al actualizar")
-    })
-}
+        const { ID, ...datosSinID } = datos
+        axios.put(`http://localhost:3000/album/actualizar/${album.ID}`, datosSinID)
+            .then(() => {
+                alert("Album actualizado correctamente")
+                setModoEditar(false)
+            })
+            .catch(() => {
+                alert("Error al actualizar")
+            })
+    }
 
     const handleEliminar = () => {
         const confirmacion = window.confirm("¿Seguro que querés eliminar este álbum?")
@@ -49,30 +52,34 @@ function Detalle() {
                 })
         }
     }
-    
+
 
 
 
     return (
         <div className="detalles">
             <div className="contenedor-detalle">
-            <h1>{album.nombre}</h1>
-            <p><b>Cantante:</b> {album.cantante}</p>
-            <p><b>Compositor:</b> {album.compositor}</p>
-            <p><b>Canciones:</b> {album.cantidad_canciones}</p>
-            <p><b>Minutos:</b> {album.total_minutos}</p>
-            <p><b>Género:</b> {album.genero}</p>
-            <p><b>Grammys:</b> {album.total_grammys}</p>
-            <p><b>Single:</b> {album.single}</p>
-            <p><b>Año:</b> {album.año}</p>
-            <div className="btn-detalle">
-            <button onClick={handleEditar}>Editar</button>
-            <button onClick={handleEliminar}>Eliminar</button>
-            </div>
-            {modoEditar && (
-                
-                <AlbumForm initialData={album} onSubmit={handlePut} />
-            )}
+                <h1>{album.nombre}</h1>
+                <p><b>Cantante:</b> {album.cantante}</p>
+                <p><b>Compositor:</b> {album.compositor}</p>
+                <p><b>Canciones:</b> {album.cantidad_canciones}</p>
+                <p><b>Minutos:</b> {album.total_minutos}</p>
+                <p><b>Género:</b> {album.genero}</p>
+                <p><b>Grammys:</b> {album.total_grammys}</p>
+                <p><b>Single:</b> {album.single}</p>
+                <p><b>Año:</b> {album.año}</p>
+                <div className="btn-detalle">
+                    <button onClick={handleEditar}>Editar</button>
+                    <button onClick={handleEliminar}>Eliminar</button>
+                </div>
+                {modoEditar && (
+
+                    <AlbumForm initialData={album} onSubmit={handlePut} />
+                )}
+                {favoritos.some((fav) => fav.ID === album.ID)
+                    ? <button onClick={() => quitarFavorito(album.ID)} style={{ backgroundColor: "red", color: "white" }}>Quitar de Favoritos</button>
+                    : <button onClick={() => agregarFavorito(album)} style={{ backgroundColor: "green", color: "white" }}>Agregar a Favoritos</button>
+                }
             </div>
         </div>
 
